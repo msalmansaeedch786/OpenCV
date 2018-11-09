@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private static final String TAG = "MainActivity";
 
     Button btn;
-    Mat mRgba, mGray, mCanny, viewFinder;
+    Mat mRgba, viewFinder;
     JavaCameraView javaCameraView;
 
     BaseLoaderCallback baseLoaderCallback = new BaseLoaderCallback(this) {
@@ -128,8 +128,6 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     @Override
     public void onCameraViewStarted(int width, int height) {
         mRgba = new Mat(height, width, CvType.CV_8UC4);
-        mGray = new Mat(height, width, CvType.CV_8UC1);
-        mCanny = new Mat(height, width, CvType.CV_8UC1);
     }
 
     @Override
@@ -141,12 +139,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
 
-        Imgproc.cvtColor(mRgba, mGray, Imgproc.COLOR_RGB2GRAY);
-        Imgproc.Canny(mGray, mCanny, 50,150);
-
-        viewFinder = mCanny.t();
+        viewFinder = mRgba.t();
         Core.flip(viewFinder, viewFinder, 1);
 
-        return mCanny;
+        return mRgba;
     }
 }
